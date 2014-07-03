@@ -163,8 +163,8 @@
       // This function also returns a promise, which, when resolved, will be
       // provided an `unbind` method, a function which you can call to stop
       // watching the local model for changes.
-      object.$bind = function(scope, name, defaultFn) {
-        return self._bind(scope, name, defaultFn);
+      object.$bind = function(scope, name, defaultFn, forceUpdate) {
+        return self._bind(scope, name, defaultFn, forceUpdate);
       };
 
       // Add an object to the remote data. Adding an object is the
@@ -697,7 +697,7 @@
     // This function creates a 3-way binding between the provided scope model
     // and Firebase. All changes made to the local model are saved to Firebase
     // and changes to the remote data automatically appear on the local model.
-    _bind: function(scope, name, defaultFn) {
+    _bind: function(scope, name, defaultFn, forceUpdate) {
       var self = this;
       var deferred = self._q.defer();
 
@@ -740,7 +740,7 @@
         if (self._object.$value !== undefined &&
             angular.equals(local, self._object.$value)) {
           return;
-        } else if (angular.equals(local, self._parseObject(self._object))) {
+        } else if (!forceUpdate && angular.equals(local, self._parseObject(self._object))) {
           return;
         }
 
